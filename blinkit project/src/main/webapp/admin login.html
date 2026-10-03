@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="UTF-8">
+    <title>Admin Login</title>
+    <link rel="stylesheet" href="admin.css">
+</head>
+
+<body>
+
+    <div class="admin-login">
+
+        <h1>Admin Login</h1>
+
+        <p>Login using your email and password</p>
+
+        <input
+            type="email"
+            id="loginEmail"
+            placeholder="Enter Email"
+        >
+
+        <div class="password-box">
+
+            <input
+                type="password"
+                id="loginPassword"
+                placeholder="Enter Password"
+            >
+
+            <span onclick="togglePassword('loginPassword', this)">
+                👁️
+            </span>
+
+        </div>
+
+        <p>
+            <a href="admin-forgot-password.html">
+                Forgot Password?
+            </a>
+        </p>
+
+        <button type="button" onclick="loginAdmin()">
+            Login
+        </button>
+
+        <p>
+            Don't have an account?
+            <a href="admin Register.html">Register</a>
+        </p>
+
+    </div>
+
+    <script src="admin.js"></script>
+
+</body>
+
+</html>

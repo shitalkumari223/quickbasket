@@ -1,0 +1,266 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Blinkit</title>
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+   <div class="navbar">
+   <div class="logo">
+   Blinkit
+   </div> 
+   <div class="location-bar">
+        <b>Delivery in 8 minutes</b>
+        <div id="locationText" onclick="openLocationPopup()" style="cursor:pointer;">📍 Detect Location</div>
+    </div>
+      <div class="search-bar">
+        <span>🔍</span>
+        <input type="text" placeholder="Search for products...">
+    </div> 
+     <div class="login">
+        <a href="profile.html">Profile</a>
+    </div>
+
+    <!-- Add to  -->
+    <div class="cart">
+        <a href="cart.html">🛒 cart</a>
+    </div> 
+   </div>
+    <script src = "Script.js"></script>
+ <img src="https://media.beehiiv.com/cdn-cgi/image/fit=scale-down,format=auto,onerror=redirect,quality=80/uploads/asset/file/e0c9f359-ef34-4ba2-a83c-66c6b9f1bc9b/image.png?t=1709555855" width = "1520" height = "350"> 
+ <br><br>
+ <div class="categories" style="display: flex;">
+
+    <div style="text-align: center; cursor: pointer;"
+     onclick="showCategory('Vegetables')">
+        <img src="https://e7.pngegg.com/pngimages/468/93/png-clipart-vegetable-fruit-food-gift-baskets-century-farms-international-fruits-basket-natural-foods-leaf-vegetable-thumbnail.png"
+             width="200" height="200">
+        <p>Vegetables</p>
+    </div>
+
+    <div style="text-align: center; margin-left: 20px; cursor: pointer;"
+     onclick="showCategory('Snacks')">
+        <img src="https://cdnimg.carepac.com/wp-content/uploads/2023/05/chips-packaging-benefits.jpg"
+             width="200" height="200">
+        <p>Snacks</p>
+    </div>
+
+    <div style="text-align: center; margin-left: 20px; cursor: pointer;"
+     onclick="showCategory('Atta & Flour')">
+        <img src="https://m.media-amazon.com/images/I/91m3vBvZO4L.jpg"
+             width="200" height="200">
+        <p>Atta & Flour</p>
+    </div>
+
+    <div style="text-align: center; margin-left: 20px; cursor: pointer;"
+     onclick="showCategory('Cold Drinks')">
+        <img src="https://img.magnific.com/premium-psd/soft-drinks-isolated-transparent-background_999327-101577.jpg?semt=ais_hybrid&w=740&q=80"
+             width="200" height="200">
+        <p>Cold Drinks</p>
+    </div>
+
+    <div style="text-align: center; margin-left: 20px; cursor: pointer;"
+     onclick="showCategory('Beauty & Hygiene')">
+        <img src="https://c8.alamy.com/comp/2P5MP93/toiletries-soap-toothpaste-shampoo-toothbrush-2P5MP93.jpg"
+             width="200" height="200">
+        <p>Beauty & Hygiene</p>
+    </div>
+
+    <div style="text-align: center; margin-left: 20px;  cursor: pointer;"
+     onclick="showCategory('Milk & Dairy')">
+        <img src="https://m.media-amazon.com/images/I/81dcsysKdkL._AC_UF350,350_QL80_.jpg"
+             width="200" height="200">
+        <p>Milk & Dairy</p>
+    </div>
+
+    <div style="text-align: center; margin-left: 20px; cursor: pointer;"
+     onclick="showCategory('Jewellery')">
+        <img src="https://khammaghani.in/wp-content/uploads/2025/02/Bridal-Jewellery-Set-for-Lehenga-1.jpg"
+             width="200" height="200">
+        <p>Jewellery</p>
+    </div>
+
+</div>
+ <br>
+<div class="next-row">
+
+    <div style="text-align: center; cursor: pointer;"
+     onclick="showCategory('Fruits')">
+        <img src="https://media.istockphoto.com/id/995518546/photo/assortment-of-colorful-ripe-tropical-fruits-top-view.jpg?s=612x612&w=0&k=20&c=bz2zksjSPikOYm9I-mG-f8SAQWVpFsR4M_u4K9soLQ0="
+             width="200" height="200">
+        <p>fruits</p>
+    </div>
+
+    <div style="text-align: center; margin-left: 20px; cursor: pointer;"
+     onclick="showCategory('Ice cream')">
+        <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcShw9PTwo5Iq1-Eth2SBj_6zZ4DPrB8aNAeaPyC2dNzOOZ0Ndj04zU8YIs&s=10"
+             width="200" height="200">
+        <p>Ice cream</p>
+    </div>
+
+    <div style="text-align: center; margin-left: 20px; cursor: pointer;"
+     onclick="showCategory('Rice')">
+        <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTjzlN74V_9oVF1Fw3Q_WCT_Bdsir__bboiGCmEWFoomXS1HhfgRG12_OeO&s=10"
+             width="200" height="200">
+        <p>Rice</p>
+    </div>
+
+    <div style="text-align: center; margin-left: 20px; cursor: pointer;"
+     onclick="showCategory('Tea Cofy')">
+        <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSDt8AzuoFVpfsdJty4DVnEHmH1_UwwD7VyV-cqMEJGPw&s=10"
+             width="200" height="200">
+        <p>Tea Cofy</p>
+    </div>
+
+    <div style="text-align: center; margin-left: 20px; cursor: pointer;"
+     onclick="showCategory('Electronics')">
+        <img src="https://thumbs.dreamstime.com/b/many-used-modern-electronic-gadgets-use-white-floor-reuse-recycle-concept-top-view-153892434.jpg"
+             width="200" height="200">
+        <p>Electronics</p>
+    </div>
+
+    <div style="text-align: center; margin-left: 20px; cursor: pointer;"
+     onclick="showCategory('Kitchen set')">
+        <img src="https://m.media-amazon.com/images/I/71UJxWSXp1L.jpg"
+             width="200" height="200">
+        <p>Kitchen set</p>
+    </div>
+
+    <div style="text-align: center; margin-left: 20px; cursor: pointer;"
+     onclick="showCategory('Makeup Kit')">
+        <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQV6Zy5FxhH6u6Y3oPPZMLmM3BP03wJFrKHow7TfXToPrxBggdARjTw-76o&s=10"
+             width="200" height="200">
+        <p>Makeup Kit</p>
+    </div>
+
+</div>
+<br>
+<div class="third-row" style="display: flex; align-items: flex-start;">
+
+    <div style="text-align: center; cursor: pointer;"
+     onclick="showCategory('Chocolate')">
+        <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQHljiGp3C6U1DtldG0O_mCJj2ICs0IDcn7BNUxgSzDCq5FolO-as2fnR4T&s=10"
+             width="200" height="200">
+        <p>Chocolates</p>
+    </div>
+
+    <div style="text-align: center; margin-left: 15px; cursor: pointer;"
+     onclick="showCategory('Biscuit')">
+        <img src="https://makanaka.wordpress.com/wp-content/uploads/2014/02/rg_201402_biscuits_brands.jpg"
+             width="200" height="200">
+        <p>Biscuit</p>
+    </div>
+
+    <div style="text-align: center; margin-left: 15px; cursor: pointer;"
+     onclick="showCategory('Pharmacy')">
+        <img src="https://thumbs.dreamstime.com/b/pharmacy-interior-blurred-background-58416047.jpg"
+             width="200" height="200">
+        <p>Pharmacy</p>
+    </div>
+
+    <div style="text-align: center; margin-left: 15px; cursor: pointer;"
+     onclick="showCategory('Masala')">
+        <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcR23MJN1ZGtsUXZ0wwr_upZJAf8Evw4yZ0wxY_5-1O9Gi2rhbUdac-Bd2BR&s=10"
+             width="200" height="200">
+        <p>Masala</p>
+    </div>
+
+    <div style="text-align: center; margin-left: 15px; cursor: pointer;"
+     onclick="showCategory('Chicken & Fish')">
+        <img src="https://assets.epicurious.com/photos/62f16ed5fe4be95d5a460eed/1:1/w_4318,h_4318,c_limit/RoastChicken_RECIPE_080420_37993.jpg"
+             width="200" height="200">
+        <p>Chicken & Fish</p>
+    </div>
+
+    <div style="text-align: center; margin-left: 15px; cursor: pointer;"
+     onclick="showCategory('Baby Care')">
+        <img src="https://m.media-amazon.com/images/I/81-w2v5CnsL.jpg"
+             width="200" height="200">
+        <p>Baby Care</p>
+    </div>
+
+    <div style="text-align: center; margin-left: 15px; cursor: pointer;"
+     onclick="showCategory('Taddy')">
+        <img src="https://images.meesho.com/images/products/407686052/ige4m_512.webp?width=512"
+             width="200" height="200">
+        <p>Taddy</p>
+    </div>
+
+</div>
+
+</div>
+<div class="category-text">
+
+    <h2>Categories</h2>
+
+    <div class="category-columns">
+
+        <div>
+            <p>Vegetables & Fruits</p>
+            <p>Atta, Rice & Dal</p>
+            <p>Oil, Ghee & Masala</p>
+            <p>Bakery & Biscuits</p>
+            <p>Dry Fruits & Cereals</p>
+            <p>Kitchenware & Appliances</p>
+            <p>Stationery & Games</p>
+            <p>Cleaning Essentials</p>
+        </div>
+
+        <div>
+            <p>Chips & Namkeen</p>
+            <p>Drinks & Juices</p>
+            <p>Tea, Coffee & Milk Drinks</p>
+            <p>Ice Creams & More</p>
+            <p>Sweets & Chocolates</p>
+            <p>Instant Food</p>
+            <p>Baby Care</p>
+            <p>Personal Care</p>
+        </div>
+
+        <div>
+            <p>Beauty & Cosmetics</p>
+            <p>Health & Pharma</p>
+            <p>Hair</p>
+            <p>Feminine Hygiene</p>
+            <p>Skin & Face</p>
+            <p>Dairy, Bread & Eggs</p>
+            <p>Chicken, Meat & Fish</p>
+            <p>Electronics</p>
+        </div>
+
+    </div>
+
+</div>
+<!-- ================= LOCATION POPUP ================= -->
+<div id="locationPopup" class="location-popup">
+    <div class="location-box">
+
+        <button class="close-btn" onclick="closeLocationPopup()">✕</button>
+
+        <h2>Select your location</h2>
+
+        <button class="current-location" onclick="getCurrentLocation()">
+            📍 Use Current Location
+        </button>
+
+        <div id="map"></div>
+
+        <input type="text" id="address" placeholder="Your address will appear here">
+
+        <p id="locationMessage"></p>
+
+        <button class="confirm-btn" onclick="confirmLocation()">
+            Confirm Location
+        </button>
+
+    </div>
+</div>
+
+<!-- ================= SCRIPTS (order important) ================= -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.js"></script>
+<script src="login.js"></script>
+<script src="location.js"></script>
+
+</body>
+</html>

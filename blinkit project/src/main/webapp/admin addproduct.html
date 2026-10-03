@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="UTF-8">
+    <title>Products</title>
+    <link rel="stylesheet" href="admin.css">
+</head>
+
+<body>
+
+<div class="dashboard">
+
+    <h1>Add Product</h1>
+
+    <label>Category</label>
+
+    <select id="category">
+        <option value="">Select Category</option>
+        <option value="Vegetables">Vegetables</option>
+        <option value="Fruits">Fruits</option>
+        <option value="Snacks">Snacks</option>
+        <option value="Atta & Flour">Atta & Flour</option>
+        <option value="Cold Drinks">Cold Drinks</option>
+        <option value="Beauty & Hygiene">Beauty & Hygiene</option>
+        <option value="Milk & Dairy">Milk & Dairy</option>
+        <option value="Jewellery">Jewellery</option>
+        <option value="Ice cream">Ice cream</option>
+        <option value="Rice">Rice</option>
+        <option value="Tea Cofy">Tea Cofy</option>
+        <option value="Electronics">Electronics</option>
+        <option value="Kitchen set">Kitchen set</option>
+        <option value="Makeup Kit">Makeup Kit</option>
+        <option value="Chocolate">Chocolate</option>
+        <option value="Biscuit">Biscuit</option>
+        <option value="Pharmacy">Pharmacy</option>
+        <option value="Masala">Masala</option>
+        <option value="Chicken & Fish">Chicken & Fish</option>
+        <option value="Baby Care">Baby Care</option>
+        <option value="Taddy">Taddy</option>
+    </select>
+
+    <br><br>
+
+    <label>Product Name</label>
+    <input type="text" id="productName" placeholder="Enter product name">
+
+    <br><br>
+
+    <label>Quantity</label>
+    <input type="text" id="productQuantity" placeholder="Example: 1 kg">
+
+    <br><br>
+
+    <label>Price</label>
+    <input type="number" id="productPrice" placeholder="Enter price">
+
+    <br><br>
+
+    <label>Image URL</label>
+    <input type="text" id="productImage" placeholder="Enter image URL">
+
+    <br><br>
+
+    <label>Description</label>
+    <textarea id="productDescription"
+              placeholder="Enter product description"></textarea>
+
+    <br><br>
+
+    <button onclick="addProduct()">
+        ADD PRODUCT
+    </button>
+
+    <br><br>
+    <button onclick="window.location.href='view products.html'">
+        View Products
+    </button>
+    
+
+    <button onclick="window.location.href='admin dashboard.html'">
+        Back
+    </button>
+
+</div>
+
+<script src="admin.js"></script>
+
+</body>
+
+</html>
