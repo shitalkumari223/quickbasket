@@ -1,67 +1,261 @@
 package com.blinkit.controller;
 
-import com.blinkit.dao.CartDAO;
 import com.blinkit.dao.OrderDAO;
-import com.blinkit.model.CartItem;
 import com.blinkit.model.Order;
 import com.blinkit.model.User;
 import com.google.gson.Gson;
 
-import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.*;
+
 import java.io.IOException;
 import java.util.List;
 
-// Protected by AuthFilter (URL pattern /order/*)
-@SuppressWarnings("serial")
-@WebServlet("/order/manage")
+@WebServlet("/order")
 public class OrderServlet extends HttpServlet {
 
-    private final OrderDAO orderDAO = new OrderDAO();
-    private final CartDAO CartDAO = new CartDAO();
-    private final Gson gson = new Gson();
+    private final OrderDAO orderDAO =
+            new OrderDAO();
 
-    private User getLoggedInUser(HttpServletRequest request) {
-        HttpSession session = request.getSession(false);
-        return (User) session.getAttribute("user");
+    private final Gson gson =
+            new Gson();
+
+
+    // =================================================
+    // GET USER ID
+    // =================================================
+
+    private int getUserId(
+            HttpServletRequest request) {
+
+        HttpSession session =
+                request.getSession(false);
+
+        if (session == null) {
+
+            return -1;
+        }
+
+
+        User user =
+                (User) session.getAttribute(
+                        "user"
+                );
+
+
+        if (user == null) {
+
+            return -1;
+        }
+
+
+        return user.getId();
     }
 
-    // GET /order/manage -> order history for the logged-in user
+
+    // =================================================
+    // GET = MY ORDERS / ADMIN ALL ORDERS
+    // =================================================
+
     @Override
-    protected void doGet(HttpServletRequest request, HttpServletResponse response)
+    protected void doGet(
+            HttpServletRequest request,
+            HttpServletResponse response)
             throws IOException {
 
-        User user = getLoggedInUser(request);
-        List<Order> orders = orderDAO.getOrdersByUser(user.getId());
 
-        response.setContentType("application/json");
-        response.getWriter().write(gson.toJson(orders));
-    }
+        // =================================================
+        // ADMIN = VIEW ALL ORDERS
+        // =================================================
 
-    // POST /order/manage -> place an order from the user's current 
-    @Override
-    protected void doPost(HttpServletRequest request, HttpServletResponse response)
-            throws ServletException, IOException {
+        String action =
+                request.getParameter("action");
 
-        User user = getLoggedInUser(request);
-        String deliveryAddress = request.getParameter("address");
 
-        List<CartItem> Items = CartDAO.getCartByUser(user.getId());
-        response.setContentType("text/plain");
+        if ("all".equals(action)) {
 
-        if (Items.isEmpty()) {
-            response.getWriter().write(" is empty");
+            HttpSession session =
+                    request.getSession(false);
+
+
+            if (session == null) {
+
+                response.setStatus(
+                        HttpServletResponse.SC_UNAUTHORIZED
+                );
+
+                response.getWriter().write(
+                        "Please login as admin"
+                );
+
+                return;
+            }
+
+
+            User user =
+                    (User) session.getAttribute(
+                            "user"
+                    );
+
+
+            if (user == null ||
+                !user.isAdmin()) {
+
+                response.setStatus(
+                        HttpServletResponse.SC_FORBIDDEN
+                );
+
+                response.getWriter().write(
+                        "Admin access required"
+                );
+
+                return;
+            }
+
+
+            // Get all orders
+            List<Order> orders =
+                    orderDAO.getAllOrders();
+
+
+            response.setContentType(
+                    "application/json"
+            );
+
+
+            response.getWriter().write(
+                    gson.toJson(orders)
+            );
+
+
             return;
         }
 
-        int orderId = orderDAO.placeOrder(user.getId(), Items, deliveryAddress);
 
-        if (orderId != -1) {
-            CartDAO.clearCart(user.getId());
-            response.getWriter().write("Order placed. Order ID: " + orderId);
-        } else {
-            response.getWriter().write("Failed to place order");
+        // =================================================
+        // USER = MY ORDERS
+        // =================================================
+
+        int userId =
+                getUserId(request);
+
+
+        if (userId == -1) {
+
+            response.setStatus(
+                    HttpServletResponse.SC_UNAUTHORIZED
+            );
+
+            response.getWriter().write(
+                    "Please login"
+            );
+
+            return;
+        }
+
+
+        List<Order> orders =
+                orderDAO.getOrdersByUser(
+                        userId
+                );
+
+
+        response.setContentType(
+                "application/json"
+        );
+
+
+        response.getWriter().write(
+                gson.toJson(orders)
+        );
+    }
+
+
+    // =================================================
+    // POST = PLACE ORDER
+    // =================================================
+
+    @Override
+    protected void doPost(
+            HttpServletRequest request,
+            HttpServletResponse response)
+            throws IOException {
+
+
+        int userId =
+                getUserId(request);
+
+
+        if (userId == -1) {
+
+            response.setStatus(
+                    HttpServletResponse.SC_UNAUTHORIZED
+            );
+
+            response.getWriter().write(
+                    "Please login"
+            );
+
+            return;
+        }
+
+
+        String action =
+                request.getParameter(
+                        "action"
+                );
+
+
+        response.setContentType(
+                "text/plain"
+        );
+
+
+        // =================================================
+        // PLACE ORDER
+        // =================================================
+
+        if ("place".equals(action)) {
+
+            String address =
+                    request.getParameter(
+                            "address"
+                    );
+
+
+            if (
+                address == null ||
+                address.trim().isEmpty()
+            ) {
+
+                response.getWriter().write(
+                        "Address required"
+                );
+
+                return;
+            }
+
+
+            int orderId =
+                    orderDAO.placeOrder(
+                            userId,
+                            address
+                    );
+
+
+            if (orderId > 0) {
+
+                response.getWriter().write(
+                        "Order placed: " +
+                        orderId
+                );
+
+            } else {
+
+                response.getWriter().write(
+                        "Failed to place order"
+                );
+            }
         }
     }
 }

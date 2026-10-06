@@ -1,130 +1,314 @@
 package com.blinkit.dao;
 
 import com.blinkit.model.CartItem;
+
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 
 public class CartDAO {
 
-    // Add karo, pehle se ho to quantity badhao
-    public boolean addToCart(int userId, int productId, int quantity) {
 
-        String checkSql = "SELECT id, quantity FROM cart WHERE user_id = ? AND product_id = ?";
+    // ================= ADD TO CART =================
 
-        try (Connection conn = DBConnection.getConnection();
-             PreparedStatement checkPs = conn.prepareStatement(checkSql)) {
+    public boolean addToCart(
+            int userId,
+            int productId,
+            int quantity) {
 
-            checkPs.setInt(1, userId);
-            checkPs.setInt(2, productId);
+        String checkSql =
+                "SELECT id, quantity " +
+                "FROM cart " +
+                "WHERE user_id = ? " +
+                "AND product_id = ?";
 
-            try (ResultSet rs = checkPs.executeQuery()) {
+        try (
+                Connection conn =
+                        DBConnection.getConnection();
+
+                PreparedStatement ps =
+                        conn.prepareStatement(
+                                checkSql
+                        )
+        ) {
+
+            ps.setInt(1, userId);
+            ps.setInt(2, productId);
+
+            try (ResultSet rs =
+                         ps.executeQuery()) {
+
+                // Product already in cart
                 if (rs.next()) {
-                    int existingId = rs.getInt("id");
-                    int newQty = rs.getInt("quantity") + quantity;
-                    return updateQuantity(existingId, newQty);
-                } else {
-                    String insertSql = "INSERT INTO cart (user_id, product_id, quantity) VALUES (?, ?, ?)";
-                    try (PreparedStatement insertPs = conn.prepareStatement(insertSql)) {
-                        insertPs.setInt(1, userId);
-                        insertPs.setInt(2, productId);
-                        insertPs.setInt(3, quantity);
-                        return insertPs.executeUpdate() > 0;
-                    }
+
+                    int cartId =
+                            rs.getInt("id");
+
+                    int oldQuantity =
+                            rs.getInt("quantity");
+
+                    int newQuantity =
+                            oldQuantity + quantity;
+
+                    return updateQuantity(
+                            cartId,
+                            newQuantity
+                    );
+                }
+
+                // New product
+                String insertSql =
+                        "INSERT INTO cart " +
+                        "(user_id, product_id, quantity) " +
+                        "VALUES (?, ?, ?)";
+
+                try (
+                        PreparedStatement insertPs =
+                                conn.prepareStatement(
+                                        insertSql
+                                )
+                ) {
+
+                    insertPs.setInt(
+                            1,
+                            userId
+                    );
+
+                    insertPs.setInt(
+                            2,
+                            productId
+                    );
+
+                    insertPs.setInt(
+                            3,
+                            quantity
+                    );
+
+                    return
+                            insertPs.executeUpdate()
+                            > 0;
                 }
             }
+
         } catch (SQLException e) {
+
             e.printStackTrace();
+
             return false;
         }
     }
 
-    public List<CartItem> getCartByUser(int userId) {
 
-        List<CartItem> list = new ArrayList<>();
+    // ================= GET CART =================
 
-        String sql = "SELECT c.id, c.user_id, c.product_id, c.quantity, p.name, p.price, p.image " +
-                     "FROM cart c JOIN products p ON c.product_id = p.id " +
-                     "WHERE c.user_id = ?";
+    public List<CartItem> getCartByUser(
+            int userId) {
 
-        try (Connection conn = DBConnection.getConnection();
-             PreparedStatement ps = conn.prepareStatement(sql)) {
+        List<CartItem> list =
+                new ArrayList<>();
 
-            ps.setInt(1, userId);
+        String sql =
+                "SELECT " +
+                "c.id, " +
+                "c.user_id, " +
+                "c.product_id, " +
+                "c.quantity, " +
+                "p.name, " +
+                "p.price, " +
+                "p.image " +
 
-            try (ResultSet rs = ps.executeQuery()) {
+                "FROM cart c " +
+
+                "JOIN products p " +
+                "ON c.product_id = p.id " +
+
+                "WHERE c.user_id = ?";
+
+        try (
+                Connection conn =
+                        DBConnection.getConnection();
+
+                PreparedStatement ps =
+                        conn.prepareStatement(
+                                sql
+                        )
+        ) {
+
+            ps.setInt(
+                    1,
+                    userId
+            );
+
+            try (
+                    ResultSet rs =
+                            ps.executeQuery()
+            ) {
+
                 while (rs.next()) {
-                    list.add(new CartItem(
-                        rs.getInt("id"),
-                        rs.getInt("user_id"),
-                        rs.getInt("product_id"),
-                        rs.getString("name"),
-                        rs.getBigDecimal("price"),
-                        rs.getString("image"),
-                        rs.getInt("quantity")
-                    ));
+
+                    CartItem item =
+                            new CartItem(
+
+                                    rs.getInt(
+                                            "id"
+                                    ),
+
+                                    rs.getInt(
+                                            "user_id"
+                                    ),
+
+                                    rs.getInt(
+                                            "product_id"
+                                    ),
+
+                                    rs.getString(
+                                            "name"
+                                    ),
+
+                                    rs.getBigDecimal(
+                                            "price"
+                                    ),
+
+                                    rs.getString(
+                                            "image"
+                                    ),
+
+                                    rs.getInt(
+                                            "quantity"
+                                    )
+                            );
+
+                    list.add(item);
                 }
             }
 
         } catch (SQLException e) {
+
             e.printStackTrace();
         }
 
         return list;
     }
 
-    public boolean updateQuantity(int cartItemId, int newQuantity) {
 
-        if (newQuantity <= 0) {
-            return removeItem(cartItemId);
+    // ================= UPDATE =================
+
+    public boolean updateQuantity(
+            int cartItemId,
+            int quantity) {
+
+        if (quantity <= 0) {
+
+            return removeItem(
+                    cartItemId
+            );
         }
 
-        String sql = "UPDATE cart SET quantity = ? WHERE id = ?";
+        String sql =
+                "UPDATE cart " +
+                "SET quantity = ? " +
+                "WHERE id = ?";
 
-        try (Connection conn = DBConnection.getConnection();
-             PreparedStatement ps = conn.prepareStatement(sql)) {
+        try (
+                Connection conn =
+                        DBConnection.getConnection();
 
-            ps.setInt(1, newQuantity);
-            ps.setInt(2, cartItemId);
+                PreparedStatement ps =
+                        conn.prepareStatement(
+                                sql
+                        )
+        ) {
 
-            return ps.executeUpdate() > 0;
+            ps.setInt(
+                    1,
+                    quantity
+            );
+
+            ps.setInt(
+                    2,
+                    cartItemId
+            );
+
+            return
+                    ps.executeUpdate() > 0;
 
         } catch (SQLException e) {
+
             e.printStackTrace();
+
             return false;
         }
     }
 
-    public boolean removeItem(int cartItemId) {
 
-        String sql = "DELETE FROM cart WHERE id = ?";
+    // ================= REMOVE =================
 
-        try (Connection conn = DBConnection.getConnection();
-             PreparedStatement ps = conn.prepareStatement(sql)) {
+    public boolean removeItem(
+            int cartItemId) {
 
-            ps.setInt(1, cartItemId);
+        String sql =
+                "DELETE FROM cart " +
+                "WHERE id = ?";
 
-            return ps.executeUpdate() > 0;
+        try (
+                Connection conn =
+                        DBConnection.getConnection();
+
+                PreparedStatement ps =
+                        conn.prepareStatement(
+                                sql
+                        )
+        ) {
+
+            ps.setInt(
+                    1,
+                    cartItemId
+            );
+
+            return
+                    ps.executeUpdate() > 0;
 
         } catch (SQLException e) {
+
             e.printStackTrace();
+
             return false;
         }
     }
 
-    public boolean clearCart(int userId) {
 
-        String sql = "DELETE FROM cart WHERE user_id = ?";
+    // ================= CLEAR CART =================
 
-        try (Connection conn = DBConnection.getConnection();
-             PreparedStatement ps = conn.prepareStatement(sql)) {
+    public boolean clearCart(
+            int userId) {
 
-            ps.setInt(1, userId);
+        String sql =
+                "DELETE FROM cart " +
+                "WHERE user_id = ?";
+
+        try (
+                Connection conn =
+                        DBConnection.getConnection();
+
+                PreparedStatement ps =
+                        conn.prepareStatement(
+                                sql
+                        )
+        ) {
+
+            ps.setInt(
+                    1,
+                    userId
+            );
+
             ps.executeUpdate();
+
             return true;
 
         } catch (SQLException e) {
+
             e.printStackTrace();
+
             return false;
         }
     }

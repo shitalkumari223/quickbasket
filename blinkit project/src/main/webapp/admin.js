@@ -614,3 +614,44 @@ function showProducts() {
 
 // Page open hote hi products show honge
 showProducts();
+
+function loadOrders() {
+
+    fetch("/blinkit_project/order?action=all")
+        .then(response => response.json())
+        .then(orders => {
+
+            let container =
+                document.getElementById("ordersContainer");
+
+            container.innerHTML = "";
+
+            if (orders.length === 0) {
+                container.innerHTML = "<p>No orders found.</p>";
+                return;
+            }
+
+            orders.forEach(order => {
+
+                container.innerHTML += `
+                    <div>
+                        <h2>Order #${order.id}</h2>
+                        <p>Total: ₹${order.totalAmount}</p>
+                        <p>Address: ${order.address}</p>
+                        <p>Status: ${order.status}</p>
+                        <p>Date: ${order.createdAt}</p>
+                        <hr>
+                    </div>
+                `;
+
+            });
+
+        })
+        .catch(error => {
+            console.error(error);
+            document.getElementById("ordersContainer").innerHTML =
+                "<p>Unable to load orders.</p>";
+        });
+}
+
+loadOrders();

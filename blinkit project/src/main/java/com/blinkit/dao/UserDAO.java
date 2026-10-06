@@ -224,8 +224,61 @@ public class UserDAO {
 
         return null;
     }
+    public boolean updateProfile(
+            int userId,
+            String name,
+            String mobile) {
 
+        String sql =
+                "UPDATE users SET name = ?, mobile = ? WHERE id = ?";
 
+        try (
+            Connection conn = DBConnection.getConnection();
+            PreparedStatement ps = conn.prepareStatement(sql)
+        ) {
+
+            ps.setString(1, name);
+            ps.setString(2, mobile);
+            ps.setInt(3, userId);
+
+            return ps.executeUpdate() > 0;
+
+        } catch (SQLException e) {
+
+            e.printStackTrace();
+
+            return false;
+        }
+    }
+
+    public boolean updateAccount(
+            int userId,
+            String name,
+            String email,
+            String mobile) {
+
+        String sql =
+            "UPDATE users SET name = ?, email = ?, mobile = ? WHERE id = ?";
+
+        try (
+            Connection conn = DBConnection.getConnection();
+            PreparedStatement ps = conn.prepareStatement(sql)
+        ) {
+
+            ps.setString(1, name);
+            ps.setString(2, email);
+            ps.setString(3, mobile);
+            ps.setInt(4, userId);
+
+            return ps.executeUpdate() > 0;
+
+        } catch (SQLException e) {
+
+            e.printStackTrace();
+
+            return false;
+        }
+    } 
     // ==========================================
     // UPDATE PASSWORD
     // ==========================================

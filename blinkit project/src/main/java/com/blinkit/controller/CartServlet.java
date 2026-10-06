@@ -5,95 +5,196 @@ import com.blinkit.model.CartItem;
 import com.blinkit.model.User;
 import com.google.gson.Gson;
 
-import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.*;
 import java.io.IOException;
 import java.util.List;
 
-@WebServlet("/cart")
+@WebServlet("/cart/manage")
 public class CartServlet extends HttpServlet {
 
-    private final CartDAO cartDAO = new CartDAO();
-    private final Gson gson = new Gson();
+    private final CartDAO cartDAO =
+            new CartDAO();
 
-    private Integer getLoggedInUserId(HttpServletRequest request) {
+    private final Gson gson =
+            new Gson();
 
-        HttpSession session = request.getSession(false);
+
+    private int getUserId(
+            HttpServletRequest request) {
+
+        HttpSession session =
+                request.getSession(false);
 
         if (session == null) {
-            return null;
+            return -1;
         }
 
-        User user = (User) session.getAttribute("user");
+        User user =
+                (User) session.getAttribute("user");
 
         if (user == null) {
-            return null;
+            return -1;
         }
 
         return user.getId();
     }
 
+
+    // ================= GET CART =================
+
     @Override
-    protected void doGet(HttpServletRequest request, HttpServletResponse response)
+    protected void doGet(
+            HttpServletRequest request,
+            HttpServletResponse response)
             throws IOException {
 
-        Integer userId = getLoggedInUserId(request);
+        int userId =
+                getUserId(request);
 
-        response.setContentType("application/json");
+        if (userId == -1) {
 
-        if (userId == null) {
-            response.getWriter().write("[]");
+            response.setStatus(
+                    HttpServletResponse.SC_UNAUTHORIZED
+            );
+
+            response.getWriter()
+                    .write("Please login");
+
             return;
         }
 
-        List<CartItem> items = cartDAO.getCartByUser(userId);
-        response.getWriter().write(gson.toJson(items));
+        List<CartItem> cart =
+                cartDAO.getCartByUser(userId);
+
+        response.setContentType(
+                "application/json"
+        );
+
+        response.getWriter()
+                .write(
+                        gson.toJson(cart)
+                );
     }
 
+
+    // ================= ADD / UPDATE / REMOVE =================
+
     @Override
-    protected void doPost(HttpServletRequest request, HttpServletResponse response)
-            throws ServletException, IOException {
+    protected void doPost(
+            HttpServletRequest request,
+            HttpServletResponse response)
+            throws IOException {
 
-        Integer userId = getLoggedInUserId(request);
+        int userId =
+                getUserId(request);
 
-        response.setContentType("text/plain");
+        if (userId == -1) {
 
-        if (userId == null) {
-            response.getWriter().write("Please login first");
+            response.setStatus(
+                    HttpServletResponse.SC_UNAUTHORIZED
+            );
+
+            response.getWriter()
+                    .write("Please login");
+
             return;
         }
 
-        String action = request.getParameter("action");
-        boolean success;
+        String action =
+                request.getParameter(
+                        "action"
+                );
 
-        switch (action) {
+        boolean success = false;
 
-            case "add":
-                int productId = Integer.parseInt(request.getParameter("productId"));
-                int quantity = Integer.parseInt(request.getParameter("quantity"));
-                success = cartDAO.addToCart(userId, productId, quantity);
-                break;
 
-            case "update":
-                int itemId = Integer.parseInt(request.getParameter("itemId"));
-                int newQty = Integer.parseInt(request.getParameter("quantity"));
-                success = cartDAO.updateQuantity(itemId, newQty);
-                break;
+        // ADD
+        if ("add".equals(action)) {
 
-            case "remove":
-                int removeId = Integer.parseInt(request.getParameter("itemId"));
-                success = cartDAO.removeItem(removeId);
-                break;
+            int productId =
+                    Integer.parseInt(
+                            request.getParameter(
+                                    "productId"
+                            )
+                    );
 
-            case "clear":
-                success = cartDAO.clearCart(userId);
-                break;
+            int quantity =
+                    Integer.parseInt(
+                            request.getParameter(
+                                    "quantity"
+                            )
+                    );
 
-            default:
-                success = false;
+            success =
+                    cartDAO.addToCart(
+                            userId,
+                            productId,
+                            quantity
+                    );
         }
 
-        response.getWriter().write(success ? "Success" : "Failed");
+
+        // UPDATE
+        else if ("update".equals(action)) {
+
+            int cartItemId =
+                    Integer.parseInt(
+                            request.getParameter(
+                                    "cartItemId"
+                            )
+                    );
+
+            int quantity =
+                    Integer.parseInt(
+                            request.getParameter(
+                                    "quantity"
+                            )
+                    );
+
+            success =
+                    cartDAO.updateQuantity(
+                            cartItemId,
+                            quantity
+                    );
+        }
+
+
+        // REMOVE
+        else if ("remove".equals(action)) {
+
+            int cartItemId =
+                    Integer.parseInt(
+                            request.getParameter(
+                                    "cartItemId"
+                            )
+                    );
+
+            success =
+                    cartDAO.removeItem(
+                            cartItemId
+                    );
+        }
+
+
+        // CLEAR
+        else if ("clear".equals(action)) {
+
+            success =
+                    cartDAO.clearCart(
+                            userId
+                    );
+        }
+
+
+        response.setContentType(
+                "text/plain"
+        );
+
+        response.getWriter().write(
+                success
+                        ? "Success"
+                        : "Failed"
+        );
     }
 }

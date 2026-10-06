@@ -14,9 +14,11 @@ public class AuthServlet extends HttpServlet {
 
     private UserDAO userDAO = new UserDAO();
 
+
     // ==========================================
     // POST
     // ==========================================
+
     @Override
     protected void doPost(
             HttpServletRequest request,
@@ -26,14 +28,18 @@ public class AuthServlet extends HttpServlet {
         response.setContentType("text/plain");
         response.setCharacterEncoding("UTF-8");
 
-        String action = request.getParameter("action");
+        String action =
+                request.getParameter("action");
 
-        System.out.println("AUTH ACTION = " + action);
+        System.out.println(
+                "AUTH ACTION = " + action
+        );
 
 
         // ==========================================
         // USER REGISTER
         // ==========================================
+
         if ("register".equals(action)) {
 
             String name =
@@ -134,9 +140,172 @@ public class AuthServlet extends HttpServlet {
         }
 
 
+
+        // ==========================================
+        // UPDATE PROFILE
+        // ==========================================
+
+        if ("updateProfile".equals(action)) {
+
+            HttpSession session =
+                    request.getSession(false);
+
+
+            if (session == null) {
+
+                response.getWriter().write(
+                        "Please login"
+                );
+
+                return;
+            }
+
+
+            User user =
+                    (User) session.getAttribute("user");
+
+
+            if (user == null) {
+
+                response.getWriter().write(
+                        "Please login"
+                );
+
+                return;
+            }
+
+
+            String name =
+                    request.getParameter("name");
+
+            String mobile =
+                    request.getParameter("mobile");
+
+
+            boolean success =
+                    userDAO.updateProfile(
+                            user.getId(),
+                            name,
+                            mobile
+                    );
+
+
+            if (success) {
+
+                user.setName(name);
+
+                user.setMobile(mobile);
+
+                session.setAttribute(
+                        "user",
+                        user
+                );
+
+
+                response.getWriter().write(
+                        "Success"
+                );
+
+            } else {
+
+                response.getWriter().write(
+                        "Failed"
+                );
+            }
+
+            return;
+        }
+
+
+
+        // ==========================================
+        // UPDATE ACCOUNT
+        // ==========================================
+
+        if ("updateAccount".equals(action)) {
+
+            HttpSession session =
+                    request.getSession(false);
+
+
+            if (session == null) {
+
+                response.getWriter().write(
+                        "Please login"
+                );
+
+                return;
+            }
+
+
+            User user =
+                    (User) session.getAttribute("user");
+
+
+            if (user == null) {
+
+                response.getWriter().write(
+                        "Please login"
+                );
+
+                return;
+            }
+
+
+            String name =
+                    request.getParameter("name");
+
+            String email =
+                    request.getParameter("email");
+
+            String mobile =
+                    request.getParameter("mobile");
+
+
+            boolean success =
+                    userDAO.updateAccount(
+                            user.getId(),
+                            name,
+                            email,
+                            mobile
+                    );
+
+
+            if (success) {
+
+                user.setName(name);
+
+                user.setEmail(email);
+
+                user.setMobile(mobile);
+
+
+                session.setAttribute(
+                        "user",
+                        user
+                );
+
+
+                response.getWriter().write(
+                        "Success"
+                );
+
+            } else {
+
+                response.getWriter().write(
+                        "Failed"
+                );
+            }
+
+            return;
+        }
+
+
+
         // ==========================================
         // ADMIN REGISTER
         // ==========================================
+
         if ("adminRegister".equals(action)) {
 
             String name =
@@ -237,9 +406,11 @@ public class AuthServlet extends HttpServlet {
         }
 
 
+
         // ==========================================
         // USER LOGIN
         // ==========================================
+
         if ("login".equals(action)) {
 
             String email =
@@ -298,9 +469,11 @@ public class AuthServlet extends HttpServlet {
         }
 
 
+
         // ==========================================
         // ADMIN LOGIN
         // ==========================================
+
         if ("adminLogin".equals(action)) {
 
             String email =
@@ -359,9 +532,11 @@ public class AuthServlet extends HttpServlet {
         }
 
 
+
         // ==========================================
         // USER FORGOT PASSWORD
         // ==========================================
+
         if ("forgotPassword".equals(action)) {
 
             String email =
@@ -429,9 +604,11 @@ public class AuthServlet extends HttpServlet {
         }
 
 
+
         // ==========================================
         // ADMIN FORGOT PASSWORD
         // ==========================================
+
         if ("adminForgotPassword".equals(action)) {
 
             String email =
@@ -465,9 +642,11 @@ public class AuthServlet extends HttpServlet {
             }
 
 
+
             // ==========================================
             // CHECK ADMIN ROLE
             // ==========================================
+
             if (!"ADMIN".equalsIgnoreCase(
                     admin.getRole())) {
 
@@ -518,9 +697,11 @@ public class AuthServlet extends HttpServlet {
         }
 
 
+
         // ==========================================
         // INVALID ACTION
         // ==========================================
+
         response.setStatus(
                 HttpServletResponse.SC_BAD_REQUEST
         );
@@ -532,18 +713,26 @@ public class AuthServlet extends HttpServlet {
     }
 
 
+
     // ==========================================
-    // LOGOUT
+    // GET
     // ==========================================
+
     @Override
     protected void doGet(
             HttpServletRequest request,
             HttpServletResponse response)
             throws ServletException, IOException {
 
+
         String action =
                 request.getParameter("action");
 
+
+
+        // ==========================================
+        // LOGOUT
+        // ==========================================
 
         if ("logout".equals(action)) {
 
@@ -565,8 +754,107 @@ public class AuthServlet extends HttpServlet {
         }
 
 
+
+        // ==========================================
+        // GET PROFILE / ACCOUNT
+        // ==========================================
+
+        if ("profile".equals(action)) {
+
+            HttpSession session =
+                    request.getSession(false);
+
+
+            if (session == null ||
+                    session.getAttribute("user") == null) {
+
+                response.setStatus(
+                        HttpServletResponse.SC_UNAUTHORIZED
+                );
+
+                response.getWriter().write(
+                        "Please login"
+                );
+
+                return;
+            }
+
+
+            User user =
+                    (User) session.getAttribute("user");
+
+
+            response.setContentType(
+                    "application/json"
+            );
+
+            response.setCharacterEncoding(
+                    "UTF-8"
+            );
+
+
+            String name =
+                    user.getName() == null
+                    ? ""
+                    : user.getName();
+
+            String email =
+                    user.getEmail() == null
+                    ? ""
+                    : user.getEmail();
+
+            String mobile =
+                    user.getMobile() == null
+                    ? ""
+                    : user.getMobile();
+
+
+            // Basic JSON escaping
+            name = escapeJson(name);
+            email = escapeJson(email);
+            mobile = escapeJson(mobile);
+
+
+            response.getWriter().write(
+
+                    "{"
+                    + "\"id\":" + user.getId()
+                    + ",\"name\":\"" + name + "\""
+                    + ",\"email\":\"" + email + "\""
+                    + ",\"mobile\":\"" + mobile + "\""
+                    + "}"
+            );
+
+            return;
+        }
+
+
+
+        // ==========================================
+        // DEFAULT
+        // ==========================================
+
         response.sendRedirect(
                 "login.html"
         );
+    }
+
+
+
+    // ==========================================
+    // JSON ESCAPE
+    // ==========================================
+
+    private String escapeJson(String value) {
+
+        if (value == null) {
+
+            return "";
+        }
+
+
+        return value
+                .replace("\\", "\\\\")
+                .replace("\"", "\\\"");
     }
 }

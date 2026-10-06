@@ -272,7 +272,7 @@ function logout() {
         localStorage.removeItem("latitude");
         localStorage.removeItem("longitude");
 
-        window.location.href = "login.html";
+        window.location.href = "home.html";
     })
 
     .catch(error => {
@@ -365,24 +365,278 @@ function addToCart(productId) {
 
     formData.append("action", "add");
     formData.append("productId", productId);
-    formData.append("quantity", 1);
+    formData.append("quantity", "1");
 
-    fetch("/blinkit_project/cart", {
+    fetch("/blinkit_project/cart/manage", {
         method: "POST",
-        headers: { "Content-Type": "application/x-www-form-urlencoded" },
+        headers: {
+            "Content-Type": "application/x-www-form-urlencoded"
+        },
         body: formData
     })
     .then(response => response.text())
     .then(data => {
-        data = data.trim();
-        if (data === "Success") {
-            window.location.href = "cart.html";
-        } else if (data === "Please login first") {
-            alert("Cart me add karne ke liye pehle login karo");
-            window.location.href = "login.html";
+
+        console.log("CART RESPONSE:", data);
+
+        if (data.trim() === "Success") {
+            alert("Product added to cart!");
         } else {
-            alert("Add to cart failed: " + data);
+            alert("Failed: " + data);
         }
     })
-    .catch(error => console.error("Add to cart error:", error));
+    .catch(error => {
+        console.error(error);
+        alert("Please login first");
+    });
+}
+
+function loadProfile() {
+
+    fetch("/blinkit_project/auth?action=profile")
+        .then(response => response.json())
+        .then(user => {
+
+            document.getElementById("userName").innerText =
+                user.name || "User";
+
+            document.getElementById("userMobile").innerText =
+                user.mobile || "Mobile Number";
+
+        })
+        .catch(error => {
+            console.error(error);
+        });
+}
+function saveProfile() {
+
+    let name =
+        document.getElementById("userName").value.trim();
+
+    let mobile =
+        document.getElementById("userMobile").value.trim();
+
+
+    if (name === "") {
+        alert("Please enter name");
+        return;
+    }
+
+    if (mobile === "") {
+        alert("Please enter mobile number");
+        return;
+    }
+
+
+    let formData = new URLSearchParams();
+
+    formData.append("action", "updateProfile");
+    formData.append("name", name);
+    formData.append("mobile", mobile);
+
+
+    fetch("/blinkit_project/auth", {
+
+        method: "POST",
+
+        headers: {
+            "Content-Type":
+                "application/x-www-form-urlencoded"
+        },
+
+        body: formData
+    })
+
+    .then(response => response.text())
+
+    .then(data => {
+
+        if (data.trim() === "Success") {
+
+            alert("Profile saved successfully!");
+
+        } else {
+
+            alert(data);
+        }
+    })
+
+    .catch(error => {
+
+        console.error(error);
+
+        alert("Something went wrong");
+    });
+}
+
+// ==========================================
+// LOAD ACCOUNT
+// ==========================================
+
+function loadAccount() {
+
+    fetch("/blinkit_project/auth?action=profile")
+
+        .then(response => {
+
+            if (!response.ok) {
+
+                throw new Error("Please login first");
+
+            }
+
+            return response.json();
+
+        })
+
+        .then(user => {
+
+            document.getElementById("accountName").value =
+                user.name || "";
+
+            document.getElementById("accountEmail").value =
+                user.email || "";
+
+            document.getElementById("accountMobile").value =
+                user.mobile || "";
+
+        })
+
+        .catch(error => {
+
+            console.error(error);
+
+            alert("Please login first");
+
+            window.location.href =
+                "login.html";
+
+        });
+
+}
+
+
+
+// ==========================================
+// SAVE ACCOUNT
+// ==========================================
+
+function saveAccount() {
+
+    let name =
+        document.getElementById("accountName")
+        .value.trim();
+
+    let email =
+        document.getElementById("accountEmail")
+        .value.trim();
+
+    let mobile =
+        document.getElementById("accountMobile")
+        .value.trim();
+
+
+    if (name === "") {
+
+        alert("Please enter name");
+
+        return;
+
+    }
+
+
+    if (email === "") {
+
+        alert("Please enter email");
+
+        return;
+
+    }
+
+
+    if (mobile === "") {
+
+        alert("Please enter mobile number");
+
+        return;
+
+    }
+
+
+    if (!/^[0-9]{10}$/.test(mobile)) {
+
+        alert("Enter valid 10 digit mobile number");
+
+        return;
+
+    }
+
+
+    let formData =
+        new URLSearchParams();
+
+    formData.append(
+        "action",
+        "updateAccount"
+    );
+
+    formData.append(
+        "name",
+        name
+    );
+
+    formData.append(
+        "email",
+        email
+    );
+
+    formData.append(
+        "mobile",
+        mobile
+    );
+
+
+    fetch("/blinkit_project/auth", {
+
+        method: "POST",
+
+        headers: {
+
+            "Content-Type":
+                "application/x-www-form-urlencoded"
+
+        },
+
+        body: formData
+
+    })
+
+    .then(response =>
+        response.text()
+    )
+
+    .then(data => {
+
+        if (data.trim() === "Success") {
+
+            alert(
+                "Account saved successfully!"
+            );
+
+        } else {
+
+            alert(data);
+
+        }
+
+    })
+
+    .catch(error => {
+
+        console.error(error);
+
+        alert("Something went wrong");
+
+    });
+
 }
