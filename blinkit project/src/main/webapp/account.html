@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <title>My Account - Blinkit</title>
+
+    <link rel="stylesheet" href="style.css">
+
+</head>
+
+<body>
+
+    <div class="profile-container">
+
+        <h1>My Account</h1>
+
+
+        <div class="profile-card">
+
+            <div class="profile-icon">
+                👤
+            </div>
+
+
+            <h2>Account Details</h2>
+
+
+            <!-- Name -->
+            <p>
+
+                <b>Name:</b>
+
+                <input
+                    type="text"
+                    id="accountName"
+                    placeholder="Enter your name"
+                >
+
+            </p>
+
+
+            <!-- Email -->
+            <p>
+
+                <b>Email:</b>
+
+                <input
+                    type="email"
+                    id="accountEmail"
+                    placeholder="Enter your email"
+                >
+
+            </p>
+
+
+            <!-- Mobile -->
+            <p>
+
+                <b>Mobile:</b>
+
+                <input
+                    type="text"
+                    id="accountMobile"
+                    placeholder="Enter mobile number"
+                >
+
+            </p>
+
+
+            <!-- Save -->
+            <button
+                type="button"
+                onclick="saveAccount()">
+
+                Save
+
+            </button>
+
+        </div>
+
+
+        <br>
+
+
+        <button
+            type="button"
+            onclick="window.location.href='profile.html'">
+
+            Back to Profile
+
+        </button>
+
+    </div>
+
+
+    <script src="login.js"></script>
+
+</body>
+
+</html>
